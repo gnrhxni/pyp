@@ -1,20 +1,27 @@
 #!/usr/bin/env python 
 #version 2.11.30
 #author tobyrosen@gmail.com
-                                                                                                                                                                                                                                      
-#Copyright (c) 2011,2012, Sony Pictures Imageworks                                                                                                                                                                                                
-#Distributed under the New BSD License.
-#All rights reserved.                                                                                                                                                                                                                        
-#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:                                                                                              
-#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.                                                                                                                
-#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation                                                                                         
-#and/or other materials provided with the distribution.                                                                                                                                                                                      
-#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,                                                                                           
-#THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS                                                                                       
-#BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF                                                                                                 
-#SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER                                                                                               
-#IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED                                                                                              
-#OF THE POSSIBILITY OF SUCH DAMAGE.                                                                                                                                                                                                          
+
+#Copyright (c) 2011,2012, Sony Pictures Imageworks Distributed under
+#the New BSD License.  All rights reserved.  Redistribution and use in
+#source and binary forms, with or without modification, are permitted
+#provided that the following conditions are met: Redistributions of
+#source code must retain the above copyright notice, this list of
+#conditions and the following disclaimer.  Redistributions in binary
+#form must reproduce the above copyright notice, this list of
+#conditions and the following disclaimer in the documentation and/or
+#other materials provided with the distribution.  THIS SOFTWARE IS
+#PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+#EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+#PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+#CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+#OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+#(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+#OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         
 
 import optparse
@@ -2584,26 +2591,55 @@ TO SEE EXTENDED HELP, use --manual
 if __name__ == '__main__':
     parser = optparse.OptionParser(Docs.usage)
 
-    parser.add_option("-m", "--manual", action='store_true', help="prints out extended help")
-    parser.add_option("-l", "--macro_list", action='store_true', help="lists all available macros")
-    parser.add_option("-s", "--macro_save", dest='macro_save_name', type='string', help='saves current command as macro. use "#" for adding comments  EXAMPLE:    pyp -s "great_macro # prints first letter" "p[1]"')
-    parser.add_option("-f", "--macro_find", dest='macro_find_name', type='string', help='searches for macros with keyword or user name')
-    parser.add_option("-d", "--macro_delete", dest='macro_delete_name', type='string', help='deletes specified public macro')
-    parser.add_option("-g", "--macro_group", action='store_true', help="specify group macros for save and delete; default is user")
-    parser.add_option("-t", "--text_file", type='string', help="specify text file to load. for advanced users, you should typically cat a file into pyp")
-    parser.add_option("-x", "--execute", action='store_true', help="execute all commands.")
-    parser.add_option("-a", "--execute_aux", type='int', help="execute commands with auxillary data with custom executer")
-    parser.add_option("-c", "--turn_off_color", action='store_true', help="prints raw, uncolored output")
-    parser.add_option("-u", "--unmodified_config", action='store_true', help="prints out generic PypCustom.py config file")
-    parser.add_option("-b", "--blank_inputs", action='store', type='string', help="generate this number of blank input lines; useful for generating numbered lists with variable 'n'")
-    parser.add_option("-n", "--no_input", action='store_true', help="use with command that generates output with no input; same as --dummy_input 1")
-    parser.add_option("-i", "--ignore_blanks", action='store_true', help="remove blank lines from output")
-    parser.add_option("-k", "--keep_false", action='store_true', help="print blank lines for lines that test as False. default is to filter out False lines from the output")
-    parser.add_option("-r", "--rerun", action="store_true", help="rerun based on automatically cached data from the last run. use this after executing \"pyp\", pasting input into the shell, and hitting CTRL-D TWICE")
+    parser.add_option("-m", "--manual", 
+                      action='store_true', help="prints out extended help")
+    parser.add_option("-l", "--macro_list", action='store_true', 
+                      help="lists all available macros")
+    parser.add_option("-s", "--macro_save", dest='macro_save_name', 
+                      type='string', 
+                      help='saves current command as macro. use "#" for' 
+                      ' adding comments   EXAMPLE:   ' 
+                      ' pyp -s "great_macro # prints first letter" "p[1]"')
+    parser.add_option("-f", "--macro_find", dest='macro_find_name', 
+                      type='string', 
+                      help='searches for macros with keyword or user name')
+    parser.add_option("-d", "--macro_delete", dest='macro_delete_name', 
+                      type='string', 
+                      help='deletes specified public macro')
+    parser.add_option("-g", "--macro_group", action='store_true', 
+                      help="specify group macros for save and delete; default is user")
+    parser.add_option("-t", "--text_file", type='string', 
+                      help="specify text file to load. for advanced users, you' 
+                      ' should typically cat a file into pyp")
+    parser.add_option("-x", "--execute", action='store_true', 
+                      help="execute all commands.")
+    parser.add_option("-a", "--execute_aux", type='int', 
+                      help="execute commands with auxillary data with custom' 
+                      ' executer")
+    parser.add_option("-c", "--turn_off_color", action='store_true', 
+                      help="prints raw, uncolored output")
+    parser.add_option("-u", "--unmodified_config", action='store_true', 
+                      help="prints out generic PypCustom.py config file")
+    parser.add_option("-b", "--blank_inputs", action='store', type='string', 
+                      help="generate this number of blank input lines;' 
+                      ' useful for generating numbered lists with variable 'n'")
+    parser.add_option("-n", "--no_input", action='store_true', 
+                      help="use with command that generates output with no' 
+                      ' input; same as --dummy_input 1")
+    parser.add_option("-i", "--ignore_blanks", action='store_true', 
+                      help="remove blank lines from output")
+    parser.add_option("-k", "--keep_false", action='store_true', 
+                      help="print blank lines for lines that test as False.' 
+                      ' default is to filter out False lines from the output")
+    parser.add_option("-r", "--rerun", action="store_true", 
+                      help="rerun based on automatically cached data from the' 
+                      ' last run. use this after executing \"pyp\", pasting' 
+                      ' input into the shell, and hitting CTRL-D TWICE")
     
     (options, args) = parser.parse_args()
     
-    if options.turn_off_color or options.execute or options.execute_aux: # overall color switch asap.
+    # overall color switch asap.
+    if options.turn_off_color or options.execute or options.execute_aux: 
         Colors = NoColors
 
     #try:

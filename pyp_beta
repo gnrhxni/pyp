@@ -515,6 +515,20 @@ class Pyp(object):
            
         return final_execute
     
+    def import_extra_modules(self):
+        self.imported_modules = dict()
+        for imp_stmt in options._mport:
+            if '->' in imp_stmt:
+                (mod, item) = re.search(r'(\S+)\s*->\s*(\S+)', 
+                                        imp_stmt).groups()
+                exec "from %s import %s" %(mod, item)
+            else:
+                item = imp_stmt
+                exec "import %s" %(item)
+                
+            self.imported_modules[item] = locals()[item]
+
+
     def default_final_execute(self,cmds,null):
         '''
         defines execute command
@@ -1458,7 +1472,7 @@ class Pyp(object):
         variables['sum'] = self.power_pipe_sum
         variables['math'] = math 
        
-        
+        variables.update(self.imported_modules)
          
         try:
             output = eval(cmd, variables) #1000 lines of code wrap this line!!!
@@ -1619,19 +1633,23 @@ class Pyp(object):
     
     
     def process(self, inputs, file_input, cmds, second_stream_input, process_as_list):
-        '''
-        takes primary data from input stream (can be string, array or dictionary), applies user commands to it, 
-        captures this output. Also, generates several variables such as line counter and 
-        various string split and join variables. Outputs string, array, or dictionary in 
-        a format deliniated by the string formating stamp
-        @param inputs: inputs from std-in or previous pyp eval
-        @type inputs: str,list
-        @param file_input: inputs from file
-        @type file_input: list
-        @param cmds: python commands to be evaluated
-        @type cmds: list<str>
-        @param second_stream_input: second stream input
-        @type second_stream_input: list<str>
+        '''takes primary data from input stream (can be string, array or
+        dictionary), applies user commands to it, captures this
+        output. Also, generates several variables such as line counter
+        and various string split and join variables. 
+
+        Outputs string, array, or dictionary in a format deliniated by
+        the string formating stamp 
+
+        @param inputs: inputs from std-in or previous pyp eval 
+        @type  inputs: str,list 
+        @param file_input: inputs from file 
+        @type  file_input: list 
+        @param cmds: python commands to be evaluated 
+        @type  cmds: list<str> 
+        @param second_stream_input: second stream input 
+        @type  second_stream_input: list<str>
+
         '''
   
         while cmds: #cmds are commands that will be executed on the input stream       
@@ -1697,7 +1715,8 @@ class Pyp(object):
             
             variables.update(self.translate_preset_variables(original_input_set,file_input, second_stream_input)) #add incrementals
             variables.update(self.history[self.n]['original_splits']) # updates with original splits
-            
+            # Include imported modules
+            variables.update(self.imported_modules)
             total_output = self.safe_eval(cmd, variables)
             self.update_history(total_output,second_stream_input,file_input ,power_pipe)
             
@@ -1872,6 +1891,11 @@ class Pyp(object):
     
     def main(self):
         '''generates input stream based on file, std-in options, rerun, starts process loop, generates output'''
+
+        # Start out with imports
+        if options._mport:
+            self.import_extra_modules()
+
         second_stream_input = [PypStr(x) for x in args[1:]] #2nd stream input
         file_input =          [PypStr(x) for x in self.load_file() ]# file input
         
@@ -2583,58 +2607,61 @@ lose all lines with GOO and FOO              ==> pyp  "'GOO' not in p and 'FOO' 
 lose all lines with GOO or FOO               ==> pyp  "lose('GOO','FOO')"
 lose all lines that are numbers              ==> pyp  "not p.isdigit()"
 
--------------------------------------------------------------------------------                
+-------------------------------------------------------------------------------
 TO SEE EXTENDED HELP, use --manual
 
 """
 
 if __name__ == '__main__':
     parser = optparse.OptionParser(Docs.usage)
-
-    parser.add_option("-m", "--manual", 
-                      action='store_true', help="prints out extended help")
-    parser.add_option("-l", "--macro_list", action='store_true', 
+    parser.add_option("-m", "--manual", action='store_true', 
+                      help="prints out extended help")
+    parser.add_option("-l", "--macro_list", action="store_true", 
                       help="lists all available macros")
-    parser.add_option("-s", "--macro_save", dest='macro_save_name', 
-                      type='string', 
+    parser.add_option("-s", "--macro_save", dest="macro_save_name", 
+                      type="string", 
                       help='saves current command as macro. use "#" for' 
                       ' adding comments   EXAMPLE:   ' 
-                      ' pyp -s "great_macro # prints first letter" "p[1]"')
-    parser.add_option("-f", "--macro_find", dest='macro_find_name', 
-                      type='string', 
-                      help='searches for macros with keyword or user name')
-    parser.add_option("-d", "--macro_delete", dest='macro_delete_name', 
-                      type='string', 
-                      help='deletes specified public macro')
-    parser.add_option("-g", "--macro_group", action='store_true', 
+                      ' pyp -s "great_macro # prints first letter" "p[1]')
+    parser.add_option("-f", "--macro_find", dest="macro_find_name", 
+                      type="string", 
+                      help="searches for macros with keyword or user name")
+    parser.add_option("-d", "--macro_delete", dest="macro_delete_name", 
+                      type="string", 
+                      help="deletes specified public macro")
+    parser.add_option("-g", "--macro_group", action="store_true", 
                       help="specify group macros for save and delete; default is user")
-    parser.add_option("-t", "--text_file", type='string', 
-                      help="specify text file to load. for advanced users, you' 
-                      ' should typically cat a file into pyp")
-    parser.add_option("-x", "--execute", action='store_true', 
+    parser.add_option("-t", "--text_file", type="string", 
+                      help="specify text file to load. for advanced users, you" 
+                      " should typically cat a file into pyp")
+    parser.add_option("-x", "--execute", action="store_true", 
                       help="execute all commands.")
-    parser.add_option("-a", "--execute_aux", type='int', 
-                      help="execute commands with auxillary data with custom' 
-                      ' executer")
-    parser.add_option("-c", "--turn_off_color", action='store_true', 
+    parser.add_option("-a", "--execute_aux", type="int", 
+                      help="execute commands with auxillary data with custom" 
+                      " executer")
+    parser.add_option("-c", "--turn_off_color", action="store_true", 
                       help="prints raw, uncolored output")
-    parser.add_option("-u", "--unmodified_config", action='store_true', 
+    parser.add_option("-u", "--unmodified_config", action="store_true", 
                       help="prints out generic PypCustom.py config file")
-    parser.add_option("-b", "--blank_inputs", action='store', type='string', 
-                      help="generate this number of blank input lines;' 
-                      ' useful for generating numbered lists with variable 'n'")
-    parser.add_option("-n", "--no_input", action='store_true', 
-                      help="use with command that generates output with no' 
-                      ' input; same as --dummy_input 1")
-    parser.add_option("-i", "--ignore_blanks", action='store_true', 
+    parser.add_option("-b", "--blank_inputs", action="store", type="string", 
+                      help='generate this number of blank input lines;'
+                      ' useful for generating numbered lists with variable "n"')
+    parser.add_option("-n", "--no_input", action="store_true", 
+                      help="use with command that generates output with no" 
+                      " input; same as --dummy_input 1")
+    parser.add_option("-i", "--ignore_blanks", action="store_true", 
                       help="remove blank lines from output")
-    parser.add_option("-k", "--keep_false", action='store_true', 
-                      help="print blank lines for lines that test as False.' 
-                      ' default is to filter out False lines from the output")
+    parser.add_option("-k", "--keep_false", action="store_true", 
+                      help="print blank lines for lines that test as False." 
+                      " default is to filter out False lines from the output")
     parser.add_option("-r", "--rerun", action="store_true", 
-                      help="rerun based on automatically cached data from the' 
-                      ' last run. use this after executing \"pyp\", pasting' 
-                      ' input into the shell, and hitting CTRL-D TWICE")
+                      help="rerun based on automatically cached data from the" 
+                      " last run. use this after executing \"pyp\", pasting" 
+                      " input into the shell, and hitting CTRL-D TWICE")
+    parser.add_option("-e", "--import", dest="_mport", 
+                      action="append", type="string", 
+                      help="Import additional modules. For example: " 
+                      "pyp -e json 'json.dumps(pp)'")
     
     (options, args) = parser.parse_args()
     
